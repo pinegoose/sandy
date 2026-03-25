@@ -18,7 +18,7 @@ RUN asdf plugin add golang && asdf install golang 1.24.1 && asdf global golang 1
 ENV PATH="/root/go/bin:${PATH}"
 
 # Claude CLI
-RUN npm install -g @anthropic-ai/claude-code
+RUN curl -fsSL https://claude.ai/install.sh | bash
 
 WORKDIR /workspace
 CMD ["bash"]

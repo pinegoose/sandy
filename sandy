@@ -3,6 +3,7 @@ set -euo pipefail
 
 SANDY_HOME="${SANDY_HOME:-$HOME/.sandy}"
 COMPOSE_FILE="sandy-compose.yml"
+ENV_FILE=".sandy.env"
 
 usage() {
     cat <<EOF
@@ -22,8 +23,8 @@ EOF
 
 require_compose() {
     if [[ ! -f "$COMPOSE_FILE" ]]; then
-        echo "Error: $COMPOSE_FILE not found in current directory."
-        echo "Run 'sandy init' first."
+        echo "Error: $COMPOSE_FILE not found in current directory." >&2
+        echo "Run 'sandy init' first." >&2
         exit 1
     fi
 }
@@ -34,7 +35,7 @@ compose() {
 
 cmd_init() {
     if [[ ! -f "$SANDY_HOME/Dockerfile" ]]; then
-        echo "Error: Sandy not installed. Run install.sh first."
+        echo "Error: Sandy not installed. Run install.sh first." >&2
         exit 1
     fi
 
@@ -66,20 +67,20 @@ YAML
         echo "Created $COMPOSE_FILE"
     fi
 
-    if [[ ! -f .sandy.env ]]; then
-        cat > .sandy.env <<'ENV'
+    if [[ ! -f "$ENV_FILE" ]]; then
+        cat > "$ENV_FILE" <<'ENV'
 # Sandy container environment variables
 # These override the project .env inside the container
 # ANTHROPIC_API_KEY=sk-ant-...
 # PGUSER=admin
 # PGPASSWORD=...
 ENV
-        echo "Created .sandy.env"
+        echo "Created $ENV_FILE"
     fi
 
     # Update .gitignore
     touch .gitignore
-    for entry in ".sandy.env" "$COMPOSE_FILE"; do
+    for entry in "$ENV_FILE" "$COMPOSE_FILE"; do
         if ! grep -qxF "$entry" .gitignore; then
             echo "$entry" >> .gitignore
             echo "Added $entry to .gitignore"
@@ -90,17 +91,17 @@ ENV
 }
 
 check_env() {
-    if [[ ! -f .sandy.env ]]; then
-        echo "Warning: .sandy.env not found. Container will start with no sandy env vars."
+    if [[ ! -f "$ENV_FILE" ]]; then
+        echo "Warning: $ENV_FILE not found. Creating empty file."
+        touch "$ENV_FILE"
         return
     fi
 
-    # Extract variable names (lines that aren't comments or blank, take left of =)
     local vars
-    vars=$(grep -v '^\s*#' .sandy.env | grep -v '^\s*$' | cut -d= -f1 || true)
+    vars=$(grep -v '^\s*#' "$ENV_FILE" | grep -v '^\s*$' | cut -d= -f1 || true)
 
     if [[ -z "$vars" ]]; then
-        echo "Warning: .sandy.env has no variables set."
+        echo "Warning: $ENV_FILE has no variables set."
     else
         echo "Env vars loaded:"
         echo "$vars" | while read -r name; do echo "  $name"; done
@@ -126,6 +127,7 @@ cmd_shell() {
 
 cmd_rebuild() {
     require_compose
+    check_env
     compose build --no-cache
     compose up -d
     echo "Rebuilt and started. Run 'sandy shell' to connect."
@@ -136,7 +138,7 @@ cmd_destroy() {
     compose down -v
     rm -f "$COMPOSE_FILE"
     echo "Destroyed container, volumes, and $COMPOSE_FILE."
-    echo ".sandy.env was kept. Run 'sandy init' to start fresh."
+    echo "$ENV_FILE was kept. Run 'sandy init' to start fresh."
 }
 
 case "${1:-up}" in

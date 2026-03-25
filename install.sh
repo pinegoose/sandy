@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SANDY_HOME="$HOME/.sandy"
+SANDY_HOME="${SANDY_HOME:-$HOME/.sandy}"
 BIN_DIR="/usr/local/bin"
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"

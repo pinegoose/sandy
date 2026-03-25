@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+IMAGE="sandy-dev"
+DOCKERFILE_DIR="$HOME/dev/sandy"
+
+usage() {
+    echo "Usage: sandy [directory]"
+    echo "  Starts a dev container mounting the given directory (default: current dir)"
+    exit 1
+}
+
+[[ "${1:-}" == "-h" || "${1:-}" == "--help" ]] && usage
+
+DIR="${1:-.}"
+DIR="$(cd "$DIR" && pwd)"
+
+# Build image (docker caching makes repeated builds fast)
+docker build -q -t "$IMAGE" "$DOCKERFILE_DIR" >/dev/null
+
+docker run -it --rm \
+    -v "$DIR:/workspace" \
+    -v "$HOME/.claude:/root/.claude" \
+    -p 3000:3000 \
+    -p 5173:5173 \
+    -p 8080:8080 \
+    -p 8000:8000 \
+    "$IMAGE"

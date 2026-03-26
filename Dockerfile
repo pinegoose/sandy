@@ -11,7 +11,7 @@ ENV PATH="/root/.asdf/shims:/root/.asdf/bin:${PATH}"
 
 RUN asdf plugin add nodejs && asdf install nodejs 22.22.1 && asdf global nodejs 22.22.1
 
-RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN npm install -g pnpm && asdf reshim nodejs
 
 RUN asdf plugin add golang && asdf install golang 1.24.1 && asdf global golang 1.24.1
 ENV PATH="/root/go/bin:${PATH}"

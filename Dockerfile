@@ -6,19 +6,16 @@ RUN apt-get update && apt-get install -y \
     jq unzip \
     && rm -rf /var/lib/apt/lists/*
 
-# asdf version manager
 RUN git clone https://github.com/asdf-vm/asdf.git /root/.asdf --branch v0.15.0
 ENV PATH="/root/.asdf/shims:/root/.asdf/bin:${PATH}"
 
-# Node.js
 RUN asdf plugin add nodejs && asdf install nodejs 22.22.1 && asdf global nodejs 22.22.1
 
-# Go
 RUN asdf plugin add golang && asdf install golang 1.24.1 && asdf global golang 1.24.1
 ENV PATH="/root/go/bin:${PATH}"
 
-# Claude CLI
 RUN curl -fsSL https://claude.ai/install.sh | bash
+ENV PATH="/root/.local/bin:${PATH}"
 
 WORKDIR /workspace
 CMD ["bash"]

@@ -64,11 +64,6 @@ services:
       - ./:/workspace
     stdin_open: true
     tty: true
-    ports:
-      - "3000:3000"
-      - "5173:5173"
-      - "8080:8080"
-      - "8000:8000"
 
 volumes:
   home:

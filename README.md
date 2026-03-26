@@ -22,11 +22,6 @@ sandy rebuild # rebuild the image from scratch and start
 sandy destroy # stop, remove volumes, and remove sandy-compose.yml
 ```
 
-### Exposed ports
+### Project mounting
 
-| Port | Typical use        |
-|------|--------------------|
-| 3000 | React / Next.js    |
-| 5173 | Vite               |
-| 8080 | Go HTTP server     |
-| 8000 | Python HTTP server |
+Your project directory is mounted at `/workspace` inside the container. Run dev servers on the host — file changes are visible in both directions.

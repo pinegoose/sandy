@@ -59,14 +59,27 @@ services:
     env_file:
       - .sandy.env
     volumes:
-      - home:/root
       - ${HOST_HOME}/.claude:/root/.claude
+      - go-mod-cache:/root/go/pkg/mod
+      - go-build-cache:/root/.cache/go-build
+      - pnpm-cache:/root/.local/share/pnpm/store
+      - npm-cache:/root/.npm
+      - pip-cache:/root/.cache/pip
       - ./:/workspace
     stdin_open: true
     tty: true
+    ports:
+      - "3000:3000"
+      - "5173:5173"
+      - "8080:8080"
+      - "8000:8000"
 
 volumes:
-  home:
+  go-mod-cache:
+  go-build-cache:
+  pnpm-cache:
+  npm-cache:
+  pip-cache:
 YAML
         echo "Created $COMPOSE_FILE"
     fi

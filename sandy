@@ -25,6 +25,9 @@ find_compose() {
     local dir="$PWD"
     while [[ "$dir" != "/" ]]; do
         if [[ -f "$dir/$COMPOSE_FILE" ]]; then
+            if [[ "$dir" != "$PWD" ]]; then
+                echo "Using $COMPOSE_FILE in $dir"
+            fi
             cd "$dir"
             return 0
         fi

@@ -4,6 +4,9 @@ set -euo pipefail
 SANDY_HOME="${SANDY_HOME:-$HOME/.sandy}"
 COMPOSE_FILE="sandy-compose.yml"
 ENV_FILE=".sandy.env"
+REPO="pinegoose/sandy"
+BRANCH="master"
+BASE_URL="https://raw.githubusercontent.com/${REPO}/${BRANCH}"
 
 usage() {
     cat <<EOF
@@ -16,6 +19,7 @@ Commands:
   shell     Open a shell in the running container
   rebuild   Rebuild the container image from scratch
   destroy   Stop container, remove volumes, and remove sandy-compose.yml
+  update    Update sandy to the latest version
 
 EOF
     exit 1
@@ -158,6 +162,14 @@ cmd_destroy() {
     echo "$ENV_FILE was kept. Run 'sandy init' to start fresh."
 }
 
+cmd_update() {
+    echo "Updating sandy..."
+    curl -fsSL "${BASE_URL}/Dockerfile" -o "$SANDY_HOME/Dockerfile"
+    curl -fsSL "${BASE_URL}/sandy" -o "/usr/local/bin/sandy"
+    chmod +x "/usr/local/bin/sandy"
+    echo "Updated. Run 'sandy rebuild' in your project to pick up Dockerfile changes."
+}
+
 case "${1:-up}" in
     init)    cmd_init ;;
     up)      cmd_up ;;
@@ -165,6 +177,7 @@ case "${1:-up}" in
     shell)   cmd_shell ;;
     rebuild) cmd_rebuild ;;
     destroy) cmd_destroy ;;
+    update)  cmd_update ;;
     -h|--help) usage ;;
     *)       usage ;;
 esac

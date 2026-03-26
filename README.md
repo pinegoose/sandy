@@ -5,10 +5,8 @@ Dev container with Node.js, Go, Python, and Claude Code pre-installed.
 ## Install
 
 ```bash
-./install.sh
+curl -fsSL https://raw.githubusercontent.com/pinegoose/sandy/master/install.sh | sh
 ```
-
-Copies the Dockerfile to `~/.sandy/` and the `sandy` script to `/usr/local/bin/`.
 
 ## Usage
 
@@ -20,6 +18,7 @@ sandy shell   # open a shell in the running container
 sandy down    # stop the container
 sandy rebuild # rebuild the image from scratch and start
 sandy destroy # stop, remove volumes, and remove sandy-compose.yml
+sandy update  # update sandy to the latest version
 ```
 
 ### Project mounting

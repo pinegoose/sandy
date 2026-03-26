@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+REPO="pinegoose/sandy"
+BRANCH="master"
+BASE_URL="https://raw.githubusercontent.com/${REPO}/${BRANCH}"
 SANDY_HOME="${SANDY_HOME:-$HOME/.sandy}"
 BIN_DIR="/usr/local/bin"
-
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 echo "Installing sandy..."
 
 mkdir -p "$SANDY_HOME"
-cp "$SCRIPT_DIR/Dockerfile" "$SANDY_HOME/Dockerfile"
 
-cp "$SCRIPT_DIR/sandy" "$BIN_DIR/sandy"
-chmod +x "$BIN_DIR/sandy"
+curl -fsSL "${BASE_URL}/Dockerfile" -o "$SANDY_HOME/Dockerfile"
+curl -fsSL "${BASE_URL}/sandy" -o "${BIN_DIR}/sandy"
+chmod +x "${BIN_DIR}/sandy"
 
 echo "Done. Run 'sandy init' in any project directory to get started."

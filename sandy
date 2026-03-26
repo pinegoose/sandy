@@ -21,12 +21,18 @@ EOF
     exit 1
 }
 
-require_compose() {
-    if [[ ! -f "$COMPOSE_FILE" ]]; then
-        echo "Error: $COMPOSE_FILE not found in current directory." >&2
-        echo "Run 'sandy init' first." >&2
-        exit 1
-    fi
+find_compose() {
+    local dir="$PWD"
+    while [[ "$dir" != "/" ]]; do
+        if [[ -f "$dir/$COMPOSE_FILE" ]]; then
+            cd "$dir"
+            return 0
+        fi
+        dir="$(dirname "$dir")"
+    done
+    echo "Error: $COMPOSE_FILE not found in any parent directory." >&2
+    echo "Run 'sandy init' in your project root first." >&2
+    exit 1
 }
 
 compose() {
@@ -109,24 +115,24 @@ check_env() {
 }
 
 cmd_up() {
-    require_compose
+    find_compose
     check_env
     compose up -d
     echo "Container started. Run 'sandy shell' to connect."
 }
 
 cmd_down() {
-    require_compose
+    find_compose
     compose down
 }
 
 cmd_shell() {
-    require_compose
+    find_compose
     compose exec sandy bash
 }
 
 cmd_rebuild() {
-    require_compose
+    find_compose
     check_env
     compose build --no-cache
     compose up -d
@@ -134,7 +140,7 @@ cmd_rebuild() {
 }
 
 cmd_destroy() {
-    require_compose
+    find_compose
     compose down -v
     rm -f "$COMPOSE_FILE"
     echo "Destroyed container, volumes, and $COMPOSE_FILE."

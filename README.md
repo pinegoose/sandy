@@ -18,7 +18,7 @@ sandy shell   # open a shell in the running container
 sandy down    # stop the container
 sandy rebuild # rebuild the image from scratch and start
 sandy destroy # stop, remove volumes, and remove sandy-compose.yml
-sandy update  # update sandy to the latest version
+sandy upgrade # update sandy to the latest version
 ```
 
 ### Project mounting

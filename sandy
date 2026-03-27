@@ -19,7 +19,7 @@ Commands:
   shell     Open a shell in the running container
   rebuild   Rebuild the container image from scratch
   destroy   Stop container, remove volumes, and remove sandy-compose.yml
-  update    Update sandy to the latest version
+  upgrade   Update sandy to the latest version
 
 EOF
     exit 1
@@ -162,12 +162,12 @@ cmd_destroy() {
     echo "$ENV_FILE was kept. Run 'sandy init' to start fresh."
 }
 
-cmd_update() {
-    echo "Updating sandy..."
+cmd_upgrade() {
+    echo "Upgrading sandy..."
     curl -fsSL "${BASE_URL}/Dockerfile" -o "$SANDY_HOME/Dockerfile"
     curl -fsSL "${BASE_URL}/sandy" -o "/usr/local/bin/sandy"
     chmod +x "/usr/local/bin/sandy"
-    echo "Updated. Run 'sandy rebuild' in your project to pick up Dockerfile changes."
+    echo "Upgraded. Run 'sandy rebuild' in your project to pick up Dockerfile changes."
 }
 
 case "${1:-up}" in
@@ -177,7 +177,7 @@ case "${1:-up}" in
     shell)   cmd_shell ;;
     rebuild) cmd_rebuild ;;
     destroy) cmd_destroy ;;
-    update)  cmd_update ;;
+    upgrade) cmd_upgrade ;;
     -h|--help) usage ;;
     *)       usage ;;
 esac

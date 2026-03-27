@@ -63,12 +63,12 @@ services:
     env_file:
       - .sandy.env
     volumes:
-      - ${HOST_HOME}/.claude:/root/.claude
-      - go-mod-cache:/root/go/pkg/mod
-      - go-build-cache:/root/.cache/go-build
-      - pnpm-cache:/root/.local/share/pnpm/store
-      - npm-cache:/root/.npm
-      - pip-cache:/root/.cache/pip
+      - ${HOST_HOME}/.claude:/home/sandy/.claude
+      - go-mod-cache:/home/sandy/go/pkg/mod
+      - go-build-cache:/home/sandy/.cache/go-build
+      - pnpm-cache:/home/sandy/.local/share/pnpm/store
+      - npm-cache:/home/sandy/.npm
+      - pip-cache:/home/sandy/.cache/pip
       - ./:/workspace
     stdin_open: true
     tty: true
